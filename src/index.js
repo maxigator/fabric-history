@@ -5,6 +5,7 @@
 fabric.Canvas.prototype.initialize = (function(originalFn) {
   return function(...args) {
     originalFn.call(this, ...args);
+    console.log(args.customProperties)
     this._historyInit(args.customProperties);
     return this;
   };

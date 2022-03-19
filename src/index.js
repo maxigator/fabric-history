@@ -5,7 +5,6 @@
 fabric.Canvas.prototype.initialize = (function(originalFn) {
   return function(...args) {
     originalFn.call(this, ...args);
-    console.log(args.customProperties)
     this._historyInit(args.customProperties);
     return this;
   };
@@ -27,6 +26,13 @@ fabric.Canvas.prototype.dispose = (function(originalFn) {
  */
 fabric.Canvas.prototype._historyNext = function () {
   return JSON.stringify(this.toDatalessJSON(this.extraProps));
+}
+
+/**
+ * Returns current state of the string of the canvas
+ */
+fabric.Canvas.prototype.customProperties = function () {
+  return (this.extraProps);
 }
 
 /**

@@ -2,16 +2,13 @@
 /**
  * Override the initialize function for the _historyInit();
  */
-function initHistory(extraProps) {
-  fabric.Canvas.prototype.initialize = (function(originalFn) {
-    return function(...args) {
-      originalFn.call(this, ...args);
-      this._historyInit(extraProps);
-      return this;
-    };
-  })(fabric.Canvas.prototype.initialize);
-}
-export default initHistory;
+fabric.Canvas.prototype.initialize = (function(originalFn) {
+  return function(...args) {
+    originalFn.call(this, ...args);
+    this._historyInit(args.customProperties);
+    return this;
+  };
+})(fabric.Canvas.prototype.initialize);
 
 /**
  * Override the dispose function for the _historyDispose();
@@ -46,10 +43,10 @@ fabric.Canvas.prototype._historyEvents = function() {
 /**
  * Initialization of the plugin
  */
-fabric.Canvas.prototype._historyInit = function (extraProps) {
+fabric.Canvas.prototype._historyInit = function (customProperties) {
   this.historyUndo = [];
   this.historyRedo = [];
-  this.extraProps = extraProps;
+  this.extraProps = customProperties;
   this.historyNextState = this._historyNext();
   
   this.on(this._historyEvents());

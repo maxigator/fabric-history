@@ -1,10 +1,10 @@
 /**
  * Override the initialize function for the _historyInit();
  */
-fabric.Canvas.prototype.initialize = (function (originalFn) {
+ fabric.Canvas.prototype.initialize = (function (originalFn) {
   return function (...args) {
     originalFn.call(this, ...args);
-    this._historyInit(args.customProperties);
+    this._historyInit();
     return this;
   };
 })(fabric.Canvas.prototype.initialize);
@@ -24,15 +24,12 @@ fabric.Canvas.prototype.dispose = (function (originalFn) {
  * Returns current state of the string of the canvas
  */
 fabric.Canvas.prototype._historyNext = function () {
-  return JSON.stringify(this.toDatalessJSON(this.extraProps));
+  return JSON.stringify(this.toDatalessJSON(this.customProperties));
 };
 
 /**
  * Returns current state of the string of the canvas
  */
-fabric.Canvas.prototype.customProperties = function () {
-  return this.extraProps;
-};
 
 /**
  * Returns an object with fabricjs event mappings
@@ -49,10 +46,9 @@ fabric.Canvas.prototype._historyEvents = function () {
 /**
  * Initialization of the plugin
  */
-fabric.Canvas.prototype._historyInit = function (customProperties) {
+fabric.Canvas.prototype._historyInit = function () {
   this.historyUndo = [];
   this.historyRedo = [];
-  this.extraProps = customProperties;
   this.historyNextState = this._historyNext();
 
   this.on(this._historyEvents());

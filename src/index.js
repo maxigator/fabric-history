@@ -1,7 +1,7 @@
 /**
  * Override the initialize function for the _historyInit();
  */
- fabric.Canvas.prototype.initialize = (function (originalFn) {
+fabric.Canvas.prototype.initialize = (function (originalFn) {
   return function (...args) {
     originalFn.call(this, ...args);
     this._historyInit();
@@ -70,7 +70,7 @@ fabric.Canvas.prototype._historySaveAction = function () {
   const json = this.historyNextState;
   this.historyUndo.push(json);
   this.historyNextState = this._historyNext();
-  this.fire("history:append", { json: json });
+  this.fire("history:append", { json: json, test: "bro" });
 };
 
 /**

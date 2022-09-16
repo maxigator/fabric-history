@@ -24,12 +24,8 @@ fabric.Canvas.prototype.dispose = (function (originalFn) {
  * Returns current state of the string of the canvas
  */
 fabric.Canvas.prototype._historyNext = function () {
-  return JSON.stringify(this.toDatalessJSON(this.customProperties));
+  return JSON.stringify(this.toDatalessJSON(this.extraProps));
 };
-
-/**
- * Returns current state of the string of the canvas
- */
 
 /**
  * Returns an object with fabricjs event mappings
@@ -49,6 +45,7 @@ fabric.Canvas.prototype._historyEvents = function () {
 fabric.Canvas.prototype._historyInit = function () {
   this.historyUndo = [];
   this.historyRedo = [];
+  this.extraProps = ["selectable"];
   this.historyNextState = this._historyNext();
 
   this.on(this._historyEvents());
@@ -69,8 +66,9 @@ fabric.Canvas.prototype._historySaveAction = function () {
 
   const json = this.historyNextState;
   this.historyUndo.push(json);
+  this.historyUndo = this.historyUndo.slice(-30);
   this.historyNextState = this._historyNext();
-  this.fire("history:append", { json: json, test: "bro" });
+  this.fire("history:append", { json: json });
 };
 
 /**
@@ -107,6 +105,7 @@ fabric.Canvas.prototype.redo = function (callback) {
   if (history) {
     // Every redo action is actually a new action to the undo history
     this.historyUndo.push(this._historyNext());
+    this.historyUndo = this.historyUndo.slice(-30);
     this.historyNextState = history;
     this._loadHistory(history, "history:redo", callback);
   } else {

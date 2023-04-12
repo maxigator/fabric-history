@@ -12,7 +12,7 @@
     "url": "git+https://github.com/lyzerk/fabric-history.git"
   },
   "dependencies": {
-    "fabric": "5.2.1"
+    "fabric": "6.0.0-beta1"
   },
   "keywords": [
     "fabric",

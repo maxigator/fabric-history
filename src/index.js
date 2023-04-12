@@ -22,6 +22,7 @@ fabric.Canvas.prototype.dispose = (function (originalFn) {
  * Returns current state of the string of the canvas
  */
 fabric.Canvas.prototype._historyNext = function () {
+  console.log("bug?")
   return JSON.stringify(this.toDatalessJSON(this.extraProps));
 };
 

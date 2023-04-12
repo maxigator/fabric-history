@@ -1,14 +1,11 @@
-import * as fabric from "fabric"
+import * as fabric from "fabric";
 /**
  * Override the initialize function for the _historyInit();
  */
-fabric.Canvas.prototype.constructor = (function (originalFn) {
-  return function (...args) {
-    originalFn.call(this, ...args);
-    this._historyInit();
-    return this;
-  };
-})(fabric.Canvas.prototype.constructor);
+fabric.Canvas.prototype.historyInit = function () {
+  console.log("INITIALIZED");
+  this._historyInit();
+};
 
 /**
  * Override the dispose function for the _historyDispose();

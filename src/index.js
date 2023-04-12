@@ -1,3 +1,4 @@
+import * as fabric from "fabric"
 /**
  * Override the initialize function for the _historyInit();
  */

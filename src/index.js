@@ -23,7 +23,7 @@ fabric.Canvas.prototype.dispose = (function (originalFn) {
  */
 fabric.Canvas.prototype._historyNext = function () {
   console.trace("bug?")
-  return JSON.stringify(this.toDatalessJSON(this.extraProps));
+  return JSON.stringify(this.toJSON(this.extraProps));
 };
 
 /**

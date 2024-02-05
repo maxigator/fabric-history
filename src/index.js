@@ -3,7 +3,6 @@ import * as fabric from "fabric";
  * Override the initialize function for the _historyInit();
  */
 fabric.Canvas.prototype.historyInit = function () {
-  console.log("INITIALIZED");
   this._historyInit();
 };
 
@@ -22,8 +21,7 @@ fabric.Canvas.prototype.dispose = (function (originalFn) {
  * Returns current state of the string of the canvas
  */
 fabric.Canvas.prototype._historyNext = function () {
-  console.trace("bug?")
-  return JSON.stringify(this.toJSON(this.extraProps));
+  return JSON.stringify(this.toDatalessObject(this.extraProps));
 };
 
 /**

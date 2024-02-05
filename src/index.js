@@ -73,7 +73,7 @@ fabric.Canvas.prototype._historySaveAction = function () {
  * Pop the latest state of the history. Re-render.
  * Also, pushes into redo history.
  */
-fabric.Canvas.prototype.undo = async function () {
+fabric.Canvas.prototype.undo = function (callback) {
   // The undo process will render the new states of the objects
   // Therefore, object:added and object:modified events will triggered again
   // To ignore those events, we are setting a flag.
@@ -84,7 +84,7 @@ fabric.Canvas.prototype.undo = async function () {
     // Push the current state to the redo history
     this.historyRedo.push(this._historyNext());
     this.historyNextState = history;
-    await this._loadHistory(history, "history:undo");
+    this._loadHistory(history, "history:undo", callback);
   } else {
     this.historyProcessing = false;
   }
@@ -93,7 +93,7 @@ fabric.Canvas.prototype.undo = async function () {
 /**
  * Redo to latest undo history.
  */
-fabric.Canvas.prototype.redo = async function () {
+fabric.Canvas.prototype.redo = function (callback) {
   // The undo process will render the new states of the objects
   // Therefore, object:added and object:modified events will triggered again
   // To ignore those events, we are setting a flag.
@@ -104,19 +104,22 @@ fabric.Canvas.prototype.redo = async function () {
     this.historyUndo.push(this._historyNext());
     this.historyUndo = this.historyUndo.slice(-30);
     this.historyNextState = history;
-    await this._loadHistory(history, "history:redo");
+    this._loadHistory(history, "history:redo", callback);
   } else {
     this.historyProcessing = false;
   }
 };
 
-fabric.Canvas.prototype._loadHistory = async function (history, event) {
+fabric.Canvas.prototype._loadHistory = function (history, event, callback) {
   var that = this;
 
-  await this.loadFromJSON(history)
-  that.renderAll();
-  that.fire(event);
-  that.historyProcessing = false;
+  this.loadFromJSON(history, function () {
+    that.renderAll();
+    that.fire(event);
+    that.historyProcessing = false;
+
+    if (callback && typeof callback === "function") callback();
+  });
 };
 
 /**

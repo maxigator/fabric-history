@@ -42,7 +42,7 @@ fabric.Canvas.prototype._historyEvents = function () {
 fabric.Canvas.prototype._historyInit = function () {
   this.historyUndo = [];
   this.historyRedo = [];
-  this.extraProps = ["selectable"];
+  this.extraProps = ["selectable", "editable"];
   this.historyNextState = this._historyNext();
 
   this.on(this._historyEvents());
@@ -73,7 +73,7 @@ fabric.Canvas.prototype._historySaveAction = function () {
  * Pop the latest state of the history. Re-render.
  * Also, pushes into redo history.
  */
-fabric.Canvas.prototype.undo = function (callback) {
+fabric.Canvas.prototype.undo = async function () {
   // The undo process will render the new states of the objects
   // Therefore, object:added and object:modified events will triggered again
   // To ignore those events, we are setting a flag.
@@ -84,7 +84,7 @@ fabric.Canvas.prototype.undo = function (callback) {
     // Push the current state to the redo history
     this.historyRedo.push(this._historyNext());
     this.historyNextState = history;
-    this._loadHistory(history, "history:undo", callback);
+    await this._loadHistory(history, "history:undo");
   } else {
     this.historyProcessing = false;
   }
@@ -93,7 +93,7 @@ fabric.Canvas.prototype.undo = function (callback) {
 /**
  * Redo to latest undo history.
  */
-fabric.Canvas.prototype.redo = function (callback) {
+fabric.Canvas.prototype.redo = async function () {
   // The undo process will render the new states of the objects
   // Therefore, object:added and object:modified events will triggered again
   // To ignore those events, we are setting a flag.
@@ -104,22 +104,19 @@ fabric.Canvas.prototype.redo = function (callback) {
     this.historyUndo.push(this._historyNext());
     this.historyUndo = this.historyUndo.slice(-30);
     this.historyNextState = history;
-    this._loadHistory(history, "history:redo", callback);
+    await this._loadHistory(history, "history:redo");
   } else {
     this.historyProcessing = false;
   }
 };
 
-fabric.Canvas.prototype._loadHistory = function (history, event, callback) {
+fabric.Canvas.prototype._loadHistory = async function (history, event) {
   var that = this;
 
-  this.loadFromJSON(history, function () {
-    that.renderAll();
-    that.fire(event);
-    that.historyProcessing = false;
-
-    if (callback && typeof callback === "function") callback();
-  });
+  await this.loadFromJSON(history)
+  that.renderAll();
+  that.fire(event);
+  that.historyProcessing = false;
 };
 
 /**

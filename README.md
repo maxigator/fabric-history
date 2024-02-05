@@ -8,7 +8,7 @@ Fabric.js history implementation
 
 ## Node projects
 ```bash
-npm i fabric-history
+npm i git+https://github.com/maxigator/fabric-history.git
 ```
 
 ```javascript
@@ -18,7 +18,7 @@ import 'fabric-history';
 ## HTML
 
 ```html
-<script src="https://raw.githubusercontent.com/lyzerk/fabric-history/master/src/index.js"></script>
+<script src="https://raw.githubusercontent.com/maxigator/fabric-history/master/src/index.min.js"></script>
 ```
 
 # Usage
@@ -42,15 +42,15 @@ canvas.redo();
 </head>
 <body>
   <canvas style="border:1px solid black;" width="800" height="400"></canvas>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.4.0/fabric.min.js"></script>
-  <script src="https://alimozdemir.com/fabric-history/src/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/6.0.0-beta5/fabric.min.js"></script>
+  <script src="https://raw.githubusercontent.com/maxigator/fabric-history/master/src/index.min.js"></script>
 
   <script>
     const canvas = new fabric.Canvas(document.querySelector('canvas'), {
       isDrawingMode: true
     })
 
-    document.addEventListener('keyup', ({ keyCode, ctrlKey } = event) => {
+    document.addEventListener('keyup', async ({ keyCode, ctrlKey } = event) => {
       // Check Ctrl key is pressed.
       if (!ctrlKey) {
         return
@@ -58,12 +58,12 @@ canvas.redo();
 
       // Check pressed button is Z - Ctrl+Z.
       if (keyCode === 90) {
-        canvas.undo()
+        await canvas.undo()
       }
 
       // Check pressed button is Y - Ctrl+Y.
       if (keyCode === 89) {
-        canvas.redo()
+        await canvas.redo()
       }
     })
     </script>
@@ -88,11 +88,11 @@ You can find an advanced example on demo folder.
 
 
 ```javascript
-canvas.undo(function() { 
+canvas.undo().then(()=>{ 
   console.log('post undo');
 });
 
-canvas.redo(function() { 
+canvas.redo().then(()=>{ 
   console.log('post redo');
 });
 ```
